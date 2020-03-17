@@ -55,6 +55,11 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductOrders()
     {
-        return $this->hasMany(ProductOrder::className(), ['product_id' => 'id']);
+        return $this->hasMany(ProductOrder::class, ['product_id' => 'id']);
+    }
+
+    public function getOrders() {
+        return $this->hasMany(Order::class, ['id' => 'order_id'])
+            ->viaTable('product_order', ['product_id' => 'id']);
     }
 }
