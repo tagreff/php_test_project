@@ -1,6 +1,7 @@
 Стек: PHP7.3, Mysql, Yii2
 
 nginx-конфиг:
+
 server {
 
     charset utf-8;
