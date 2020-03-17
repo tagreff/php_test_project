@@ -1,5 +1,6 @@
 <?php
 
+use kartik\select2\Select2;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -29,7 +30,23 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'name',
             'number',
-            'status',
+            [
+                'attribute' => 'Satus',
+                'headerOptions' => ['style' => 'min-width:150px'],
+                'value' => function ($model) {
+                    return \app\models\Order::ORDER_STATUS[$model->status];
+                },
+                'filter' => Select2::widget([
+                    'model' => $searchModel,
+                    'size' => Select2::MEDIUM,
+                    'attribute' => 'status',
+                    'data' => app\models\Order::ORDER_STATUS,
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                        'placeholder' => 'Выберите тип..'
+                    ],
+                ])
+            ],
             'customer_name',
             [
                 'attribute' => 'Products',

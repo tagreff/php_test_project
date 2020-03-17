@@ -18,7 +18,12 @@ use yii\helpers\ArrayHelper;
  */
 class Order extends \yii\db\ActiveRecord
 {
-    public $orderedAmount;
+    const ORDER_STATUS = [
+        0 => self::ORDER_STATUS_ARCHIVED,
+        1 => self::ORDER_STATUS_ACTIVE
+    ];
+    const ORDER_STATUS_ARCHIVED  = "Completed";
+    const ORDER_STATUS_ACTIVE = "Active";
     public $product_ids;
 
     /**
@@ -74,12 +79,13 @@ class Order extends \yii\db\ActiveRecord
 
     public function getList()
     {
-       // if ($this->products)
-         //   return ArrayHelper::map($this->products, 'id', 'name');
-        //else {
-            $models = Product::find()->select(['id', 'name'])->orderBy('name')->asArray()->all();
+            $models = Product::find()->select(['id', 'name'])->where(['>','amount', 0])->orderBy('name')->asArray()->all();
             return ArrayHelper::map($models, 'id', 'name');
-       // }
+    }
 
+    public static function getFilterList()
+    {
+        $models = Product::find()->select(['id', 'name'])->where(['>','amount', 0])->orderBy('name')->asArray()->all();
+        return ArrayHelper::map($models, 'id', 'name');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace app\models\search;
 
+use app\models\Product;
 use app\models\ProductOrder;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -12,6 +13,7 @@ use app\models\Order;
  */
 class OrderSearch extends Order
 {
+    public $product_ids;
     /**
      * {@inheritdoc}
      */
@@ -47,6 +49,7 @@ class OrderSearch extends Order
         'product_ids' => 'po.product_id',
         ])->from(['o' => Order::tableName()])
             ->leftJoin(['po' => ProductOrder::tableName()], 'o.id = po.order_id')
+            ->leftJoin(['p' => Product::tableName()], 'po.product_id = p.id')
             ->groupBy(['product_ids' => 'po.product_id', 'id' => 'o.id',]);
 
         // add conditions that should always apply here
@@ -65,7 +68,7 @@ class OrderSearch extends Order
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            'o.id' => $this->id,
             'status' => $this->status,
         ]);
 

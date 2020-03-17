@@ -16,7 +16,17 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'status')->textInput() ?>
+    <?= $form->field($model, 'status')->widget(\kartik\select2\Select2::class, [
+        'data' => \app\models\Order::ORDER_STATUS,
+        'options' => [
+            'placeholder' => 'select...',
+
+        ],
+        'pluginOptions' => [
+            'allowClear' => true
+        ],
+
+    ]) ?>
 
     <?= $form->field($model, 'customer_name')->textInput(['maxlength' => true]) ?>
 
@@ -24,7 +34,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'product_ids')->widget(\kartik\select2\Select2::class, [
     'data' => $model->getList(),
     'options' => [
-        'placeholder' => 'products...',
+        'placeholder' => 'select...',
         'multiple' => true
     ],
     'pluginOptions' => [

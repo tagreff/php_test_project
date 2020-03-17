@@ -6,7 +6,6 @@ use app\models\ProductOrder;
 use Yii;
 use app\models\Order;
 use app\models\search\OrderSearch;
-use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -91,15 +90,25 @@ class OrderController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id) //tut est' kostyli konechno
     {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            ProductOrder::deleteAll(['AND', ['not in','product_id', $model->product_ids],['order_id' => $model->id]]);
+            if(is_array($model->product_ids)) {
+                $new_product_ids = array_diff($model->product_ids, array_column($model->productOrders ?? null, 'product_id'));
+                foreach ($new_product_ids as $product_id) {
+                    $product_order = new ProductOrder();
+                    $product_order->product_id = $product_id;
+                    $product_order->order_id = $model->id;
+                    $product_order->save();
+                }
+            }
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        $model->product_ids = array_column($model->products, 'id'); //kostyl konechno
+        $model->product_ids = array_column($model->products, 'id');
         return $this->render('update', [
             'model' => $model,
         ]);

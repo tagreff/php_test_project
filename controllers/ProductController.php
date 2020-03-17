@@ -104,7 +104,13 @@ class ProductController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        if($model->orders)
+        {
+            Yii::$app->session->setFlash('error', "This product in reserved in order");
+        }
+        else
+        $model->delete();
 
         return $this->redirect(['index']);
     }
